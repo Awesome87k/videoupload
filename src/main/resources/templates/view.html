@@ -1,0 +1,48 @@
+<!-- !DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ko">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link href="/vendors/bootstrap/bootstrap.css" rel="stylesheet">
+		<link href="/vendors/font-awesome/font-awesome.min.css" rel="stylesheet">
+		<link href="/css/view.css" rel="stylesheet">
+	</head>
+	<body>
+		<section class="view_wrap clearfix">
+			<div class="view_contents">
+				<h1>환율 계산</h1>
+				<div class="mark_area">
+					<span class="mark_name">송금국가</span>
+					<span class="mark_right source">미국(USD)</span>
+				</div>
+				<div class="mark_area">
+					<span class="mark_name">수취국가</span>
+					<select class="mark_right recept_code">
+						<option value="KRW">한국(KRW)</option>
+						<option value="JPY">일본(JPY)</option>
+						<option value="PHP">필리핀(PHP)</option>
+					</select>
+				</div>
+				<div class="mark_area">
+					<span class="mark_name">환율</span>
+					<span class="mark_right source_per_str"></span>
+					<span class="mark_right exchange_rete"></span>
+				</div>
+				<div class="mark_area">
+					<span class="mark_name">송금액</span>
+					<span class="mark_right source_str">USD</span>
+					<input type="text" class="mark_right remittance_amount" placeholder="송금액">
+				</div>
+				<div class="mark_area view_btn">
+					<button type="button" class="submit">Submit</button>
+				</div>
+				<div class="mark_area">
+					<span class="clac_qoute"></span>
+				</div>
+			</div>
+		</section>
+	</body>
+	<script  src="/vendors/jquery/3.6.0/jquery.js"></script>
+	<script  src="/js/util.js"></script>
+	<script  src="/js/view.js"></script>
+</html>

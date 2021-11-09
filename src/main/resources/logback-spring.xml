@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--로그 파일 경로 및 패턴 설정-->
+    <property name="LOG_DIR" value="/logs/"></property>
+    <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%X{ClientIP}] [%thread] %-5level %logger{35} [%file:%line] -%msg%n"/>
+    <!-- %d{yyyy-MM-dd HH:mm:ss:SSS} [%X{ClientIP}] [%thread] %-5level %logger{5} - %msg%n -->
+
+    <!-- 콘솔 로그 출력 -->
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <!-- 로그 메시지 패턴 -->
+            <Pattern>
+                ${LOG_PATTERN}
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <!--level Debug log file-->
+    <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>debug</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+       <!-- <file>${LOG_DIR}/debug/debug.log</file>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+           <!-- daily rollover-->
+            <fileNamePattern>${LOG_DIR}/debug/debug.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
+            keep 100 days' worth of history
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--level INFO log file-->
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>info</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--file>${LOG_DIR}/info/info.log</file>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--daily rollover-->
+            <fileNamePattern>${LOG_DIR}/info/info.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
+            keep 100 days' worth of history
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--level Error log file-->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--<file>${LOG_DIR}/error/error.log</file>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--daily rollover-->
+            <fileNamePattern>${LOG_DIR}/error/error.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
+            keep 100 days' worth of history
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <!-- file log -->
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<file>${LOG_DIR}/userData.log</file>-->
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                ${LOG_PATTERN}
+            </Pattern>
+        </encoder>
+        <!-- 시간별 롤링 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_DIR}/catalina.out-%d{yyyy-MM-dd-HH}.log</FileNamePattern>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!--
+      com.ostream 아래 패키지 로그들만  consoleAppender, fileAppender 방법으로 로그를 남긴다.
+       물론 <appender-ref ref="consoleAppender" />를 추가하여 콘솔로도 로그를 남길 수 있다.
+    -->
+
+    <logger name="com.ostream" level="INFO" additivity="false">
+        <appender-ref ref="fileAppender"/>
+        <appender-ref ref="consoleAppender"/>
+    </logger>
+
+    <!-- Query Loggers -->
+    <logger name="jdbc" level="ERROR"/>
+
+    <logger name="jdbc.sqlonly" level="ERROR" additivity="true">
+        <appender-ref ref="consoleAppender" />
+    </logger>
+
+    <!-- log SQL with timing information, post execution -->
+    <logger name="jdbc.sqltiming" level="ERROR" additivity="true">
+        <appender-ref ref="consoleAppender" />
+    </logger>
+
+    <logger name="jdbc.resultsettable" level="ERROR" additivity="true">
+        <appender-ref ref="consoleAppender" />
+
+    </logger>
+    <!-- turn OFF all logging (children can override) -->
+    <root level="INFO">
+        <appender-ref ref="consoleAppender"/>
+    </root>
+
+</configuration>

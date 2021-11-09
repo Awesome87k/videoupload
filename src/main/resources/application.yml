@@ -1,0 +1,31 @@
+##server 설정
+server:
+  port: 80
+  error:
+    whitelabel:
+      enabled: false
+  servlet:
+    session:
+      timeout: -1
+    encoding:
+      charset: UTF-8
+
+## log 설정
+logging:
+  config: classpath:logback-spring.xml
+
+##default yml
+spring:
+  main:
+    banner-mode: off
+  mvc:
+    static-path-pattern: /resources/static/**
+  profiles:
+    active: local
+
+## info
+info:
+  app:
+    name: video_upload_service
+    version: 0.0.1
+    description:
