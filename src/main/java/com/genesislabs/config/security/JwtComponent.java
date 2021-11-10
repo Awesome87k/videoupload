@@ -49,11 +49,11 @@ public class JwtComponent {
     }
 
     public String generateToken(UserEntity _user) {
-        return doGenerateToken(_user.getVu_id(), TOKEN_VALIDATION_SECOND);
+        return doGenerateToken(_user.getVu_email(), TOKEN_VALIDATION_SECOND);
     }
 
     public String generateRefreshToken(UserEntity _user) {
-        return doGenerateToken(_user.getVu_id(), REFRESH_TOKEN_VALIDATION_SECOND);
+        return doGenerateToken(_user.getVu_email(), REFRESH_TOKEN_VALIDATION_SECOND);
     }
 
     public String doGenerateToken(String _username, long _expireTime) {

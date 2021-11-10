@@ -16,15 +16,11 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer vu_idx;
     @NotNull
-    private String vu_id;
+    private String vu_email;
     @NotNull
     private String vu_pw;
     @NotNull
-    private String vu_email;
-    @NotNull
     private String vu_name;
     @NotNull
-    private String vu_phonenumber;
-    @OneToMany(mappedBy = "v_fileupload")
-    private List<FileUploadEntity> employees;
+    private String vu_phonenum;
 }

@@ -1,25 +1,22 @@
 package com.genesislabs.video.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Entity(name = "v_fileupload")
-public class FileUploadEntity {
+@Entity(name = "v_token")
+public class TokenEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer vf_idx;
-    @NotNull
     private Integer vu_idx;
     @NotNull
-    private String vf_path;
+    private String vt_refresh_token;
     @NotNull
-    private String vf_filename;
-    @NotNull
-    private Integer vf_filesize;
+    private Long vt_expiredtm;
 }

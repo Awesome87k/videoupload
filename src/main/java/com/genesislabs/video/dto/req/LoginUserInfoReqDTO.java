@@ -9,6 +9,7 @@ import javax.validation.constraints.Min;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CJSchDetailReqDTO {
-    private long sg_idx;
+public class LoginUserInfoReqDTO {
+    private String email;
+    private String password;
 }

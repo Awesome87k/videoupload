@@ -40,18 +40,19 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             , FilterChain _filterChain
     ) throws ServletException, IOException {
         final Cookie jwtToken = cookieComponent.getCookie(_req, JwtComponent.ACCESS_TOKEN_NAME);
-        String userId = null;
+        String email = null;
         String jwt = null;
         String refreshJwt = null;
-        String refreshUname = null;
+        String refreshEmail = null;
 
+        //access token 검증
         try{
             if(jwtToken != null){
                 jwt = jwtToken.getValue();
-                userId = jwtComponent.getUsername(jwt);
+                email = jwtComponent.getUsername(jwt);
             }
-            if(userId!=null){
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+            if(email!=null){
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 if(jwtComponent.validateToken(jwt,userDetails)){
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(_req));
@@ -59,6 +60,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (ExpiredJwtException _e){
+            log.warn(_e.getMessage());
             Cookie refreshToken = cookieComponent.getCookie(_req, JwtComponent.REFRESH_TOKEN_NAME);
             if(refreshToken!=null){
                 refreshJwt = refreshToken.getValue();
@@ -67,26 +69,29 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         }
 
+        //refresh token검증
         try{
             if(refreshJwt != null){
-                refreshUname = redisComponent.getData(refreshJwt);
+                //실서비스 에선 redis를 구축하여 토큰을 관리해야한다.
+//                refreshUname = redisComponent.getData(refreshJwt);
+                refreshEmail = userDetailsService.loadUserinfoInfoByToken(refreshJwt);
 
-                if(refreshUname.equals(jwtComponent.getUsername(refreshJwt))){
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(refreshUname);
+                if(refreshEmail.equals(jwtComponent.getUsername(refreshJwt))){
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(refreshEmail);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(_req));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
                     UserEntity user = new UserEntity();
-                    user.setVu_id(refreshUname);
+                    user.setVu_email(refreshEmail);
                     String newToken =jwtComponent.generateToken(user);
 
                     Cookie newAccessToken = cookieComponent.createCookie(JwtComponent.ACCESS_TOKEN_NAME,newToken);
                     _res.addCookie(newAccessToken);
                 }
             }
-        }catch(ExpiredJwtException e){
-
+        }catch(ExpiredJwtException _e){
+            log.error(_e);
         }
         _filterChain.doFilter(_req, _res);
     }

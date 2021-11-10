@@ -13,24 +13,24 @@ public class RedisComponent {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    public String getData(String key){
+    public String getData(String _key){
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
-        return valueOperations.get(key);
+        return valueOperations.get(_key);
     }
 
-    public void setData(String key, String value){
+    public void setData(String _key, String _value){
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(key,value);
+        valueOperations.set(_key, _value);
     }
 
-    public void setDataExpire(String key,String value,long duration){
+    public void setDataExpire(String _key, String _value, long _duration){
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
-        Duration expireDuration = Duration.ofSeconds(duration);
-        valueOperations.set(key,value,expireDuration);
+        Duration expireDuration = Duration.ofSeconds(_duration);
+        valueOperations.set(_key, _value, expireDuration);
     }
 
-    public void deleteData(String key){
-        stringRedisTemplate.delete(key);
+    public void deleteData(String _key){
+        stringRedisTemplate.delete(_key);
     }
 
 }

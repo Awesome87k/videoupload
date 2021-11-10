@@ -16,7 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_URI = {
-            "/page/loginView"
+            "/page/login_view",
+            "/data/login_access"
     };
 
     @Bean

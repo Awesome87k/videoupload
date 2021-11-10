@@ -6,6 +6,7 @@ import com.genesislabs.exception.ForbiddenException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -31,6 +32,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         dataRes.setMessage(_ex.getMessage());
         dataRes.setResult(false);
         return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 401
+     * Request에 사용자 인증정보가 올바르지 않을경우 리턴
+     * @param _ex
+     * @return DataResponse
+     */
+    @ExceptionHandler({ UsernameNotFoundException.class })
+    public ResponseEntity userNotFoundException(UsernameNotFoundException _ex) {
+        log.warn(_ex.getMessage());
+        DataResponse dataRes = new DataResponse();
+        dataRes.setMessage(_ex.getMessage());
+        dataRes.setResult(false);
+        return new ResponseEntity(dataRes, HttpStatus.UNAUTHORIZED);
     }
 
     /**

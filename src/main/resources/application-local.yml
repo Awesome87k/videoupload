@@ -1,6 +1,6 @@
 spring:
   jwt:
-    secret: videoupload*
+    secret: videoupload_secretkey_test_infomation_code!@#
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
@@ -19,7 +19,7 @@ spring:
     videoupload:
       type: com.zaxxer.hikari.HikariDataSource
       driverClassName: com.mysql.cj.jdbc.Driver
-      jdbcUrl: jdbc:mysql://101.79.240.145:3306/video_upload?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
+      jdbcUrl: jdbc:mysql://101.79.240.23:3306/video_upload?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
       username: service
       password: qnfRhcl!)!50
       hikari:
@@ -33,3 +33,4 @@ spring:
   redis:
     host: localhost
     port: 6379
+    password: 0011
