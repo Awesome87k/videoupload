@@ -1,13 +1,23 @@
 package com.genesislabs.video.controller;
 
-
+import com.genesislabs.common.DataResponse;
 import com.genesislabs.common.DataResponsePattern;
+import com.genesislabs.config.security.CookieComponent;
+import com.genesislabs.config.security.JwtComponent;
+import com.genesislabs.config.security.RedisComponent;
+import com.genesislabs.video.dto.req.LoginUserInfoReqDTO;
+import com.genesislabs.video.entity.UserEntity;
+import com.genesislabs.video.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RequestMapping(value = "/data/")
@@ -15,12 +25,48 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LoginDataController extends DataResponsePattern {
 
-    @PostMapping("doLogin")
-    public void doLogin() {
+    @Autowired
+    private CustomUserDetailService userDetailsService;
 
-//        if (bindingResult.hasErrors())
-//            log.error("요철실패!!!!!!!!!!!!");
-        log.info("요철성공!!!!!!!!!!!!");
+    @Autowired
+    private JwtComponent jwtComponent;
+
+    @Autowired
+    private CookieComponent cookieComponent;
+
+    @Autowired
+    private RedisComponent redisComponent;
+
+    @PostMapping("login_access")
+    public DataResponse loginAccess(
+            @RequestBody LoginUserInfoReqDTO _info,
+            HttpServletRequest _req,
+            HttpServletResponse _res,
+            BindingResult bindingResult
+    ) {
+        if(!ObjectUtils.isEmpty(bindingResult.getAllErrors()))
+            return super.mvcReponseFail("요청정보가 올바르지 않습니다."+bindingResult.getAllErrors());
+
+        UserEntity user = userDetailsService.loadUserByUserInfo(_info.getEmail(), _info.getPassword());
+        if(ObjectUtils.isEmpty(user))
+            return super.mvcReponseFail("로그인정보가 올바르지 않습니다.");
+
+        try {
+            String token = jwtComponent.generateToken(user);
+            String refreshJwt = jwtComponent.generateRefreshToken(user);
+            Cookie accessToken = cookieComponent.createCookie(JwtComponent.ACCESS_TOKEN_NAME, token);
+            Cookie refreshToken = cookieComponent.createCookie(JwtComponent.REFRESH_TOKEN_NAME, refreshJwt);
+            //실서비스의 경우 redis를 통해 토큰관리
+//            redisComponent.setDataExpire(refreshJwt, user.getVu_email(), JwtComponent.REFRESH_TOKEN_VALIDATION_SECOND);
+            userDetailsService.patchTokenInfo(refreshJwt, user.getVu_email(), JwtComponent.REFRESH_TOKEN_VALIDATION_SECOND);
+            _res.addCookie(accessToken);
+            _res.addCookie(refreshToken);
+
+            return super.mvcReponseSuccess("로그인에 성공했습니다");
+        } catch (Exception _e) {
+            log.error("로그인 실패", _e);
+            return super.mvcReponseFail("로그인에 실패했습니다.\n관리자에게 문의해주세요");
+        }
     }
 
 }
