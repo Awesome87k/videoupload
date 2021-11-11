@@ -40,6 +40,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             , FilterChain _filterChain
     ) throws ServletException, IOException {
         final Cookie jwtToken = cookieComponent.getCookie(_req, JwtComponent.ACCESS_TOKEN_NAME);
+        //쿠키정보가 있을경우에만 검증
+        if(jwtToken != null)
+            tokenFilter(jwtToken, _req, _res);
+        _filterChain.doFilter(_req, _res);
+    }
+
+    private void tokenFilter(
+            Cookie jwtToken
+            , HttpServletRequest _req
+            , HttpServletResponse _res
+    ) {
         String email = null;
         String jwt = null;
         String refreshJwt = null;
@@ -65,8 +76,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             if(refreshToken!=null){
                 refreshJwt = refreshToken.getValue();
             }
-        }catch(Exception e){
-
         }
 
         //refresh token검증
@@ -93,6 +102,5 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }catch(ExpiredJwtException _e){
             log.error(_e);
         }
-        _filterChain.doFilter(_req, _res);
     }
 }

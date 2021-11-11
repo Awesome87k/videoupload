@@ -5,7 +5,9 @@ import com.genesislabs.common.DataResponsePattern;
 import com.genesislabs.config.security.CookieComponent;
 import com.genesislabs.config.security.JwtComponent;
 import com.genesislabs.config.security.RedisComponent;
+import com.genesislabs.video.dto.req.JoinUserInfoReqDTO;
 import com.genesislabs.video.dto.req.LoginUserInfoReqDTO;
+import com.genesislabs.video.dto.req.RemoveUserReqDTO;
 import com.genesislabs.video.entity.UserEntity;
 import com.genesislabs.video.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @Slf4j
 @RequestMapping(value = "/data/")
@@ -39,8 +42,7 @@ public class LoginDataController extends DataResponsePattern {
 
     @PostMapping("login_access")
     public DataResponse loginAccess(
-            @RequestBody LoginUserInfoReqDTO _info,
-            HttpServletRequest _req,
+            @RequestBody @Valid LoginUserInfoReqDTO _info,
             HttpServletResponse _res,
             BindingResult bindingResult
     ) {
@@ -67,6 +69,28 @@ public class LoginDataController extends DataResponsePattern {
             log.error("로그인 실패", _e);
             return super.mvcReponseFail("로그인에 실패했습니다.\n관리자에게 문의해주세요");
         }
+    }
+
+    @PostMapping("join_member")
+    public DataResponse joinMember(
+            @RequestBody @Valid JoinUserInfoReqDTO _joinUserDTO
+    ) {
+        boolean reusltTf = userDetailsService.addJoinUser(_joinUserDTO);
+        if(reusltTf)
+            return super.mvcReponseSuccess("회원 가입에 성공했습니다");
+        else
+            return super.mvcReponseFail("회원 가입에 실패했습니다.\n관리자에게 문의해주세요");
+    }
+
+    @PostMapping("delete_account")
+    public DataResponse deleteAccount(
+            @RequestBody @Valid RemoveUserReqDTO _removeUserDTO
+    ) {
+        boolean reusltTf = userDetailsService.removeUserWithEmail(_removeUserDTO);
+        if(reusltTf)
+            return super.mvcReponseSuccess("회원 탈퇴에 성공했습니다");
+        else
+            return super.mvcReponseFail("회원 탈퇴에 실패했습니다.\n관리자에게 문의해주세요");
     }
 
 }

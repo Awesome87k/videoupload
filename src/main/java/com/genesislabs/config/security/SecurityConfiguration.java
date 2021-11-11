@@ -16,8 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_URI = {
-            "/page/login_view",
-            "/data/login_access"
+            "/js/**"
+            , "/vender/**"
+            , "/page/login_view"
+            , "/data/login_access"
+            , "/data/join_member"
     };
 
     @Bean
@@ -45,7 +48,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
             .and().exceptionHandling()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint());    // 인증 오류 발생 시 처리를 위한 핸들러 추가
-        // security필터이후  토큰 인증 필터 추가 ( TokenAuthenticationFilter > @repository를 등록하지 않고 계층구조를 만들기위해 bean으로 처리 )
         _http.cors()
                 .and().addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

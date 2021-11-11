@@ -3,8 +3,7 @@ package com.genesislabs.video.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
@@ -15,12 +14,15 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer vu_idx;
-    @NotNull
+    @NotEmpty
     private String vu_email;
-    @NotNull
+    @NotEmpty
     private String vu_pw;
-    @NotNull
+    @NotEmpty
     private String vu_name;
-    @NotNull
+    @NotEmpty
     private String vu_phonenum;
+    @NotEmpty
+    private String vu_level;
+    private String vu_del_yn;
 }
