@@ -127,12 +127,12 @@ public class CustomUserDetailService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean removeUserWithEmail(RemoveUserReqDTO _removeUserDTO) {
+    public boolean removeUserWithEmail(String _email) {
         boolean resltTf = false;
 
-        if(!ObjectUtils.isEmpty(_removeUserDTO)) {
+        if(!ObjectUtils.isEmpty(_email)) {
             //email 중복확인
-            UserEntity userEntity = userInfoRepository.findDuplicateIdByEmail(_removeUserDTO.getEmail());
+            UserEntity userEntity = userInfoRepository.findDuplicateIdByEmail(_email);
             if (ObjectUtils.isEmpty(userEntity))
                 throw new BadRequestException("탈퇴요청한 사용자가 존재하지 않습니다.");
             else {

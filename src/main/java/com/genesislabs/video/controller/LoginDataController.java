@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Slf4j
-@RequestMapping(value = "/data/")
+@RequestMapping(value = "/data/user/")
 @RestController
 @RequiredArgsConstructor
 public class LoginDataController extends DataResponsePattern {
@@ -40,8 +40,8 @@ public class LoginDataController extends DataResponsePattern {
     @Autowired
     private RedisComponent redisComponent;
 
-    @PostMapping("login_access")
-    public DataResponse loginAccess(
+    @GetMapping("login")
+    public DataResponse login(
             @RequestBody @Valid LoginUserInfoReqDTO _info,
             HttpServletResponse _res,
             BindingResult bindingResult
@@ -71,7 +71,7 @@ public class LoginDataController extends DataResponsePattern {
         }
     }
 
-    @PostMapping("join_member")
+    @PostMapping("join")
     public DataResponse joinMember(
             @RequestBody @Valid JoinUserInfoReqDTO _joinUserDTO
     ) {
@@ -82,11 +82,11 @@ public class LoginDataController extends DataResponsePattern {
             return super.mvcReponseFail("회원 가입에 실패했습니다.\n관리자에게 문의해주세요");
     }
 
-    @PostMapping("delete_account")
+    @PutMapping("del-account/{_email}")
     public DataResponse deleteAccount(
-            @RequestBody @Valid RemoveUserReqDTO _removeUserDTO
+            @PathVariable String _email
     ) {
-        boolean reusltTf = userDetailsService.removeUserWithEmail(_removeUserDTO);
+        boolean reusltTf = userDetailsService.removeUserWithEmail(_email);
         if(reusltTf)
             return super.mvcReponseSuccess("회원 탈퇴에 성공했습니다");
         else
