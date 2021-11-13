@@ -1,6 +1,5 @@
 package com.genesislabs.video.repository;
 
-import com.genesislabs.video.dto.req.JoinUserInfoReqDTO;
 import com.genesislabs.video.entity.QTokenEntity;
 import com.genesislabs.video.entity.QUserEntity;
 import com.genesislabs.video.entity.TokenEntity;

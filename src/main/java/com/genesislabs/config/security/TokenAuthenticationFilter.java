@@ -1,6 +1,5 @@
 package com.genesislabs.config.security;
 
-import com.genesislabs.video.entity.UserEntity;
 import com.genesislabs.video.service.CustomUserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.log4j.Log4j2;
@@ -30,48 +29,52 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private CookieComponent cookieComponent;
 
-    @Autowired
-    private RedisComponent redisComponent;
-
     @Override
     protected void doFilterInternal(
             HttpServletRequest _req
             , HttpServletResponse _res
             , FilterChain _filterChain
     ) throws ServletException, IOException {
-        final Cookie jwtToken = cookieComponent.getCookie(_req, JwtComponent.ACCESS_TOKEN_NAME);
-        //쿠키정보가 있을경우에만 검증
-        if(jwtToken != null)
-            tokenFilter(jwtToken, _req, _res);
+        String[] publicUri = SecurityConfiguration.PUBLIC_URI;
+        boolean jwtCheckTf = true;
+        for(String uri : publicUri) {
+            if(_req.getRequestURI().equals(uri))
+                jwtCheckTf=false;
+        }
+
+        if(jwtCheckTf)
+            jwtAuthentication(_req, _res);
         _filterChain.doFilter(_req, _res);
     }
 
-    private void tokenFilter(
-            Cookie jwtToken
-            , HttpServletRequest _req
-            , HttpServletResponse _res
-    ) {
+    /**
+     * 사용자의 발급된 토큰의 유효성을 확인한다. ( 실서비스 에선 redis를 구축하여 토큰을 관리해야한다 )
+     * @param _req
+     * @return boolean
+     */
+    private void jwtAuthentication(HttpServletRequest _req, HttpServletResponse _res) {
         String email = null;
         String jwt = null;
         String refreshJwt = null;
         String refreshEmail = null;
+        final Cookie jwtToken = cookieComponent.getCookie(_req, JwtComponent.ACCESS_TOKEN_NAME);
 
         //access token 검증
-        try{
+        try {
             if(jwtToken != null){
                 jwt = jwtToken.getValue();
                 email = jwtComponent.getUsername(jwt);
             }
             if(email!=null){
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                if(jwtComponent.validateToken(jwt,userDetails)){
+                if(jwtComponent.validateToken(jwt, userDetails)){
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(_req));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    return;
                 }
             }
         } catch (ExpiredJwtException _e){
-            log.warn(_e.getMessage());
             Cookie refreshToken = cookieComponent.getCookie(_req, JwtComponent.REFRESH_TOKEN_NAME);
             if(refreshToken!=null){
                 refreshJwt = refreshToken.getValue();
@@ -79,7 +82,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
 
         //refresh token검증
-        try{
+        try {
             if(refreshJwt != null){
                 //실서비스 에선 redis를 구축하여 토큰을 관리해야한다.
 //                refreshUname = redisComponent.getData(refreshJwt);
@@ -90,16 +93,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(_req));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
-                    UserEntity user = new UserEntity();
-                    user.setVu_email(refreshEmail);
-                    String newToken =jwtComponent.generateToken(user);
-
-                    Cookie newAccessToken = cookieComponent.createCookie(JwtComponent.ACCESS_TOKEN_NAME,newToken);
+                    String newToken =jwtComponent.generateToken(refreshEmail);
+                    Cookie newAccessToken  = cookieComponent.createCookie(JwtComponent.ACCESS_TOKEN_NAME,newToken);
                     _res.addCookie(newAccessToken);
+                    return;
                 }
+            } else {
+                log.error("not found token info, retry lgin");
+                _res.sendRedirect("/page/login-view");
             }
-        }catch(ExpiredJwtException _e){
+        } catch(ExpiredJwtException | IOException _e) {
             log.error(_e);
         }
     }

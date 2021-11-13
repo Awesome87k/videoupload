@@ -24,5 +24,6 @@ public class UserEntity {
     private String vu_phonenum;
     @NotEmpty
     private String vu_level;
+    @Column(insertable = false, updatable = false)
     private String vu_del_yn;
 }

@@ -1,0 +1,41 @@
+<!-- !DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ko">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div class="view_contents">
+			<h1>회원가입</h1>
+			<div>
+				<span>아이디</span>
+				<input type="text" id="email" placeholder="이메일">
+			</div>
+			<div>
+				<span>패스워드</span>
+				<input type="text" id="pw" placeholder="패스워드">
+			</div>
+			<div>
+				<span>이름</span>
+				<input type="text" id="name" placeholder="이름">
+			</div>
+			<div>
+				<span>전화번호</span>
+				<input type="text" id="phonenum" placeholder="전화번호">
+			</div>
+			<div>
+				<span>권한</span>
+				<select id="level">
+					<option value="M">일반사용자</option>
+					<option value="A">관리자</option>
+				</select>
+			</div>
+			<div id="view_btn">
+				<button id="join-btn" type="button">회원가입</button>
+			</div>
+			</div>
+	</body>
+	<script src="/js/util.js"></script>
+	<script src="/js/join.js"></script>
+</html>

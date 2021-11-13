@@ -9,8 +9,24 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/page/")
 @Controller
 public class ViewController {
-    @RequestMapping("login_view")
+
+    @RequestMapping("login-view")
     public ModelAndView loginView() {
-        return new ModelAndView("view");
+        return new ModelAndView("loginView");
+    }
+
+    @RequestMapping("join-view")
+    public ModelAndView joinMemeberView() {
+        return new ModelAndView("joinMemberView");
+    }
+
+    @RequestMapping("video-upload-view")
+    public ModelAndView videoUploadView() {
+        return new ModelAndView("videoUploadView");
+    }
+
+    @RequestMapping("video-search-view")
+    public ModelAndView videoSearchView() {
+        return new ModelAndView("videoSearchView");
     }
 }

@@ -16,7 +16,6 @@ import java.util.Date;
 
 @Component
 public class JwtComponent {
-
     public final static long TOKEN_VALIDATION_SECOND = 1000L * 10;
     public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 24 * 2;
 
@@ -48,8 +47,8 @@ public class JwtComponent {
         return expiration.before(new Date());
     }
 
-    public String generateToken(UserEntity _user) {
-        return doGenerateToken(_user.getVu_email(), TOKEN_VALIDATION_SECOND);
+    public String generateToken(String _email) {
+        return doGenerateToken(_email, TOKEN_VALIDATION_SECOND);
     }
 
     public String generateRefreshToken(UserEntity _user) {
@@ -74,5 +73,4 @@ public class JwtComponent {
         final String username = getUsername(_token);
         return (username.equals(_userDetails.getUsername()) && !isTokenExpired(_token));
     }
-
 }

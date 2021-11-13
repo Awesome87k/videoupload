@@ -1,33 +1,56 @@
 package com.genesislabs.config.security;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.genesislabs.video.service.CustomUserDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String[] PUBLIC_URI = {
-            "/js/**"
-            , "/vender/**"
-            , "/page/login_view"
-            , "/data/login_access"
-            , "/data/join_member"
+    protected static final String[] PUBLIC_URI = {
+            "/", "/css/**" , "/js/**", "/favicon.ico", "/error"
+            , "/page/login-view"
+            , "/page/join-view"
+            , "/data/user/login"
+            , "/data/user/logout"
+            , "/data/user/join"
     };
+
+    @Autowired
+    private LoginSuccessHandler successHandler;
+
+    @Autowired
+    private LoginFailHandler failHandler;
+
+    @Autowired
+    private CustomAuthenticationManager authenticationProvider;
+
+    @Autowired
+    private CustomUserDetailService userDetailService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put("SHA-256", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-256"));
-        return new DelegatingPasswordEncoder("SHA-256", encoders);
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    /**
+     * TODO Security 설정 사용자의 유저네임과 패스워드가 맞는지 검증
+     * @param _auth
+     * @throws Exception
+     */
+    @Override
+    public void configure(AuthenticationManagerBuilder _auth) throws Exception {
+        _auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
     }
 
     /**
@@ -39,17 +62,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity _http) throws Exception {
         _http
             .csrf().disable()
-            .formLogin().disable()
             .sessionManagement()    // stateless한 세션 정책 설정
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().formLogin()
+                .loginPage("/page/login-view")
+                .permitAll()
+            .and().logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/data/logout"))
+                .logoutSuccessUrl("/page/login-view")
+                .deleteCookies("JSESSIONID")
+                .deleteCookies("refreshToken")
+                .deleteCookies("accessToken")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .permitAll()
             .and().cors()
             .and().authorizeRequests()
                 .antMatchers(PUBLIC_URI).permitAll()
-                .anyRequest().authenticated()
-            .and().exceptionHandling()
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint());    // 인증 오류 발생 시 처리를 위한 핸들러 추가
-        _http.cors()
-                .and().addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().access("@authorizationChecker.check(request, authentication)")
+            .and().addFilterBefore(customAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
 
     /**
@@ -61,12 +94,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         _web.ignoring().antMatchers(PUBLIC_URI);
     }
 
-    /**
-     * 토큰 인증 필터 추가
-     * @return TokenAuthenticationFilter
-     */
+    @Bean
+    public CustomAuthenticationProcessingFilter customAuthenticationProcessingFilter() {
+        CustomAuthenticationProcessingFilter filter = new CustomAuthenticationProcessingFilter("/data/user/login");
+        filter.setAuthenticationManager(authenticationProvider);
+        filter.setAuthenticationFailureHandler(failHandler);
+        filter.setAuthenticationSuccessHandler(successHandler);
+        return filter;
+    }
+
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter();
     }
+
 }

@@ -53,7 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * 403
-     * Request에 부적절한 자원을 전달시 리턴
+     * 권한이 없는 접근일 경우 리턴
      * @param _ex
      * @return DataResponse
      */
@@ -68,7 +68,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * 400
-     * Request에 부적절한 자원을 전달시 리턴
+     * Request에 부적절한 method를 전달시 리턴
      * @param _ex
      * @return DataResponse
      */
