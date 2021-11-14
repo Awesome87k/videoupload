@@ -1,9 +1,11 @@
 package com.genesislabs.common;
 
-import com.genesislabs.exception.BadRequestException;
-import com.genesislabs.exception.BusinessException;
-import com.genesislabs.exception.ForbiddenException;
+import com.genesislabs.common.exception.BadRequestException;
+import com.genesislabs.common.exception.BusinessException;
+import com.genesislabs.common.exception.ForbiddenException;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -33,6 +37,48 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity badRequestException(BadRequestException _ex) {
         DataResponse dataRes = new DataResponse();
         dataRes.setMessage(_ex.getMessage());
+        dataRes.setResult(false);
+        return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400
+     * 개별 파일당 허용 용량최대치를 초과할경우 리턴
+     * @param _ex
+     * @return DataResponse
+     */
+    @ExceptionHandler({ FileSizeLimitExceededException.class })
+    public ResponseEntity fileSizeLimitException(FileSizeLimitExceededException _ex) {
+        DataResponse dataRes = new DataResponse();
+        dataRes.setMessage("허용된 업로드 용량을 초과하였습니다");
+        dataRes.setResult(false);
+        return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400
+     * 한 요청에서의 모든파일 허용용량 최대치를 초과할 경우 리턴
+     * @param _ex
+     * @return DataResponse
+     */
+    @ExceptionHandler({ SizeLimitExceededException.class })
+    public ResponseEntity sizeLimitExceededException(SizeLimitExceededException _ex) {
+        DataResponse dataRes = new DataResponse();
+        dataRes.setMessage("허용된 업로드 용량을 초과하였습니다");
+        dataRes.setResult(false);
+        return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400
+     * 업로드 허용용량 최대치를 초과할 경우 리턴
+     * @param _ex
+     * @return DataResponse
+     */
+    @ExceptionHandler({ MaxUploadSizeExceededException.class })
+    public ResponseEntity maxUploadSizeExceededException(MaxUploadSizeExceededException _ex) {
+        DataResponse dataRes = new DataResponse();
+        dataRes.setMessage("허용된 업로드 용량을 초과하였습니다");
         dataRes.setResult(false);
         return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
     }
@@ -93,12 +139,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * 500
-     * CUD 작업시 정상적으로 처리가 안됬을 떄
+     * CUD 작업시 정상적으로 처리가 안됬을 떄 리턴
      * @param _ex
      * @return DataResponse
      */
     @ExceptionHandler({ BusinessException.class })
     public ResponseEntity businessException(BusinessException _ex){
+        log.error(_ex);
+        DataResponse dataRes = new DataResponse();
+        dataRes.setMessage(_ex.getMessage());
+        dataRes.setResult(false);
+        return new ResponseEntity(dataRes, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 500
+     * CUD IOexception 발생시 리턴
+     * @param _ex
+     * @return DataResponse
+     */
+    @ExceptionHandler({ IOException.class })
+    public ResponseEntity ioException(IOException _ex){
         log.error(_ex);
         DataResponse dataRes = new DataResponse();
         dataRes.setMessage(_ex.getMessage());

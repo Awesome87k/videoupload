@@ -1,7 +1,6 @@
 package com.genesislabs.video.service;
 
-import com.genesislabs.exception.BadRequestException;
-import com.genesislabs.exception.TokenInfoNotfoundException;
+import com.genesislabs.common.exception.*;
 import com.genesislabs.video.dto.req.JoinUserInfoReqDTO;
 import com.genesislabs.video.dto.req.RemoveUserReqDTO;
 import com.genesislabs.video.entity.TokenEntity;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,12 +66,12 @@ public class CustomUserDetailService implements UserDetailsService {
         return userEntity;
     }
 
-    public String loadUserinfoInfoByToken(String _refreshToken) throws TokenInfoNotfoundException {
+    public UserEntity loadUserinfoInfoByToken(String _refreshToken) throws TokenInfoNotfoundException {
         UserEntity userEntity = userInfoRepository.findUserByTokeninfo(_refreshToken);
         if(ObjectUtils.isEmpty(userEntity))
             throw new TokenInfoNotfoundException();
 
-        return userEntity.getVu_email();
+        return userEntity;
     }
 
     @Transactional

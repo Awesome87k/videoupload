@@ -1,5 +1,6 @@
 package com.genesislabs.config.security;
 
+import com.genesislabs.video.entity.UserEntity;
 import com.genesislabs.video.service.CustomUserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.log4j.Log4j2;
@@ -86,7 +87,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             if(refreshJwt != null){
                 //실서비스 에선 redis를 구축하여 토큰을 관리해야한다.
 //                refreshUname = redisComponent.getData(refreshJwt);
-                refreshEmail = userDetailsService.loadUserinfoInfoByToken(refreshJwt);
+                UserEntity userEntity = userDetailsService.loadUserinfoInfoByToken(refreshJwt);
+                refreshEmail = userEntity.getVu_email();
 
                 if(refreshEmail.equals(jwtComponent.getUsername(refreshJwt))){
                     UserDetails userDetails = userDetailsService.loadUserByUsername(refreshEmail);

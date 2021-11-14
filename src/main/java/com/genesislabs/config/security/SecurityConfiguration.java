@@ -24,6 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             , "/data/user/login"
             , "/data/user/logout"
             , "/data/user/join"
+            , "/data/video/upload-file" // test
     };
 
     @Autowired
@@ -82,7 +83,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().access("@authorizationChecker.check(request, authentication)")
             .and().addFilterBefore(customAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
     }
 
     /**

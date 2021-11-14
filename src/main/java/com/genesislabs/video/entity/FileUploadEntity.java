@@ -21,5 +21,5 @@ public class FileUploadEntity {
     @NotNull
     private String vf_filename;
     @NotNull
-    private Integer vf_filesize;
+    private Long vf_filesize;
 }

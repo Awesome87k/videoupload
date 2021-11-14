@@ -1,6 +1,6 @@
 package com.genesislabs.common;
 
-import com.genesislabs.exception.BadRequestException;
+import com.genesislabs.common.exception.BadRequestException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,13 @@
 spring:
   jwt:
     secret: videoupload_secretkey_test_infomation_code!@#
+
+  servlet:
+    multipart:
+      maxFileSize: 100MB
+      maxRequestSize: 100MB
+      location: D:\test\video\
+
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false

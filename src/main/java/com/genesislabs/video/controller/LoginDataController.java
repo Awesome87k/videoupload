@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 @Slf4j
 @RequestMapping(value = "/data/user/")
@@ -43,5 +42,4 @@ public class LoginDataController extends DataResponsePattern {
         else
             return super.mvcReponseFail("회원 탈퇴에 실패했습니다.\n관리자에게 문의해주세요");
     }
-
 }

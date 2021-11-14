@@ -1,23 +1,19 @@
 package com.genesislabs.config.security;
 
 import com.genesislabs.common.enums.URIEnum;
-import com.genesislabs.exception.BusinessException;
+import com.genesislabs.common.exception.BusinessException;
+import com.genesislabs.common.exception.ForbiddenException;
 import com.genesislabs.video.entity.UserEntity;
 import com.genesislabs.video.service.CustomUserDetailService;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Log4j2
 @Component
@@ -32,6 +28,9 @@ public class AuthorizationChecker {
      * @return boolean
      */
     public boolean check(HttpServletRequest _req, Authentication _authentication) {
+        if(ObjectUtils.isEmpty(_authentication))
+            throw new UsernameNotFoundException("사용자 정보가 존재하지 않습니다.");
+
         Object pricipalObj = _authentication.getPrincipal();
         String userEmail = ((User) pricipalObj).getUsername();
         UserEntity userEntity = userDetailService.loadUserByUserInfo(userEmail);
@@ -48,7 +47,7 @@ public class AuthorizationChecker {
             else
                 return true;
         } else
-            throw new BusinessException("지정된 user레벨이 아닙니다. 설정된 'v_user.vu_level'정보를 확인해주세요");
+            throw new BusinessException("지정된 user레벨이 아닙니다. 'v_user.vu_level'정보를 확인해주세요");
 
     }
 }
