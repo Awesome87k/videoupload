@@ -29,3 +29,9 @@
  - spring.datasource.jdbcUrl 설정필요
  - spring.datasource.username 설정필요
  - spring.datasource.password 설정필요
+### 4 접근페이지
+ - 로그인 : /page/login-view
+ - 회원가입 : /page/join-view
+ - 업로드 : /page/video-upload-view
+ - 파일조회 : /page/video-search-view
+ - 플레이어 : /page/video-player-view
