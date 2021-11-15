@@ -1,6 +1,6 @@
 package com.genesislabs.config.security;
 
-import com.genesislabs.common.enums.URIEnum;
+import com.genesislabs.common.enums.MainURIEnum;
 import com.genesislabs.video.entity.UserEntity;
 import com.genesislabs.video.service.CustomUserDetailService;
 import lombok.extern.log4j.Log4j2;
@@ -18,8 +18,6 @@ import java.io.IOException;
 @Log4j2
 @Configuration
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
-    private final String  ADMIN_MAIN_URL_REDIRECT = "/page/main-view";
-    private final String  MEMBER_MAIN_URL_REDIRECT = "/page/main-view";
 
     @Autowired
     private CustomUserDetailService userDetailsService;
@@ -43,7 +41,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshJwt = jwtComponent.generateRefreshToken(user);
         Cookie accessToken = cookieComponent.createCookie(JwtComponent.ACCESS_TOKEN_NAME, token);
         Cookie refreshToken = cookieComponent.createCookie(JwtComponent.REFRESH_TOKEN_NAME, refreshJwt);
-        String redirectUri = (user.getVu_level().equals("A") ? URIEnum.ADMIN_MAIN_URL_REDIRECT.getMessage() : URIEnum.MEMBER_MAIN_URL_REDIRECT.getMessage());
+        String redirectUri = (user.getVu_level().equals("A") ? MainURIEnum.ADMIN_MAIN_URL_REDIRECT.getMessage() : MainURIEnum.MEMBER_MAIN_URL_REDIRECT.getMessage());
         //실서비스의 경우 redis를 통해 토큰관리
 //            redisComponent.setDataExpire(refreshJwt, user.getVu_email(), JwtComponent.REFRESH_TOKEN_VALIDATION_SECOND);
         userDetailsService.patchTokenInfo(refreshJwt, user.getVu_email(), JwtComponent.REFRESH_TOKEN_VALIDATION_SECOND);

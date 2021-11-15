@@ -33,14 +33,16 @@ public class UserInfoRepository extends QuerydslRepositorySupport {
     public UserEntity findUserByUserInfo(String _email) {
         return queryFactory
                 .selectFrom(userEntity)
-                .where(userEntity.vu_email.eq(_email))
+                .where(userEntity.vu_del_yn.eq("N")
+                        .and(userEntity.vu_email.eq(_email)))
                 .fetchOne();
     }
 
     public UserEntity findUserByUserInfo(String _email, String _pw) {
         return queryFactory
                 .selectFrom(userEntity)
-                .where(userEntity.vu_email.eq(_email)
+                .where(userEntity.vu_del_yn.eq("N")
+                        .and(userEntity.vu_email.eq(_email))
                         .and(userEntity.vu_pw.eq(_pw)))
                 .fetchOne();
     }
@@ -49,7 +51,8 @@ public class UserInfoRepository extends QuerydslRepositorySupport {
         return queryFactory
                 .selectFrom(userEntity)
                 .join(tokenEntity).on(tokenEntity.vu_idx.eq(userEntity.vu_idx))
-                .where(tokenEntity.vt_refresh_token.eq(_refreshToken))
+                .where(userEntity.vu_del_yn.eq("N")
+                        .and(tokenEntity.vt_refresh_token.eq(_refreshToken)))
                 .fetchOne();
     }
 
@@ -57,7 +60,8 @@ public class UserInfoRepository extends QuerydslRepositorySupport {
         return queryFactory
                 .selectFrom(tokenEntity)
                 .join(userEntity).on(tokenEntity.vu_idx.eq(userEntity.vu_idx))
-                .where(userEntity.vu_email.eq(_Email))
+                .where(userEntity.vu_del_yn.eq("N")
+                        .and(userEntity.vu_email.eq(_Email)))
                 .fetchOne();
     }
 

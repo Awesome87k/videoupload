@@ -11,6 +11,21 @@ const util = {
             }
         });
     },
+    uploadajax: function (_url, _data, _fns, _fne) {
+        $.ajax({
+            url: _url,
+            type: 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: _data,
+            success: _fns,
+            error: async function (jqXHR, textStatus, errorThrown) {
+                _fne(jqXHR, textStatus, errorThrown);
+            }
+        });
+    },
     getajax: function (_url, _data, _fns, _fne) {
         $.ajax({
             url: _url,

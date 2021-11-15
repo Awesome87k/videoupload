@@ -6,9 +6,21 @@
  - QueryDSL
  - redis ( 실 서비스에서 토큰을 관리할 수 있도록 세팅만구성 )
  - JTWToken
- - Mysql ( application-local.yml 접근DB 설정필요 )
+ - Mysql
 ##2.기능
 - 회원가입
 - 로그인
+- 로그아웃
+- 회원탈퇴 (api만 구성되어있습니다.)
 - 비디오업로드
 - 비디오조회
+##3. 설정
+### 3.1. DB
+> ERD
+ - src/main/resources/erd/video_uploaDB.mwb
+### 3.2.application-local.yml
+> application-local.yml 
+ - servlet.multipart.location : ${projectPath}/**static**/${uploadPath}/
+ - spring.datasource.jdbcUrl 설정필요
+ - spring.datasource.username 설정필요
+ - spring.datasource.password 설정필요

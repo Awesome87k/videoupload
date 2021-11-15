@@ -101,7 +101,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     return;
                 }
             } else {
-                log.error("not found token info, retry lgin");
+                log.error("not found token info, retry login");
                 _res.sendRedirect("/page/login-view");
             }
         } catch(ExpiredJwtException | IOException _e) {

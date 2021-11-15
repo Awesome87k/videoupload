@@ -24,7 +24,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             , "/data/user/login"
             , "/data/user/logout"
             , "/data/user/join"
-            , "/data/video/upload-file" // test
     };
 
     @Autowired

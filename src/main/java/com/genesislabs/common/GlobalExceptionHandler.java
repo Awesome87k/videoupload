@@ -3,6 +3,7 @@ package com.genesislabs.common;
 import com.genesislabs.common.exception.BadRequestException;
 import com.genesislabs.common.exception.BusinessException;
 import com.genesislabs.common.exception.ForbiddenException;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
@@ -79,6 +80,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity maxUploadSizeExceededException(MaxUploadSizeExceededException _ex) {
         DataResponse dataRes = new DataResponse();
         dataRes.setMessage("허용된 업로드 용량을 초과하였습니다");
+        dataRes.setResult(false);
+        return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400
+     * 업로드 허용용량 최대치를 초과할 경우 리턴
+     * @param _ex
+     * @return DataResponse
+     */
+    @ExceptionHandler({ ExpiredJwtException.class })
+    public ResponseEntity expiredJwtException(ExpiredJwtException _ex) {
+        DataResponse dataRes = new DataResponse();
+        dataRes.setMessage("access토큰이 만료되었습니다.");
         dataRes.setResult(false);
         return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
     }

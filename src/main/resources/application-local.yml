@@ -6,7 +6,7 @@ spring:
     multipart:
       maxFileSize: 100MB
       maxRequestSize: 100MB
-      location: D:\test\video\
+      location: E:/intelliJ_workspace/video_upload_service/src/main/resources/static/uploadfile/
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -26,9 +26,9 @@ spring:
     videoupload:
       type: com.zaxxer.hikari.HikariDataSource
       driverClassName: com.mysql.cj.jdbc.Driver
-      jdbcUrl: jdbc:mysql://101.79.240.23:3306/video_upload?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
-      username: service
-      password: qnfRhcl!)!50
+      jdbcUrl: jdbc:mysql://localhost:3306/video_upload?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
+      username: user
+      password: password
       hikari:
         poolName: ostreamCP
         connectionTimeout: 10000
