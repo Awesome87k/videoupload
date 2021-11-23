@@ -39,6 +39,6 @@ const view = {
                 alert(errorThrown);
         };
 
-        util.postajax("/data/user/join", params, fns, fne);
+        util.postajax("/data/user", params, fns, fne);
     }
 }

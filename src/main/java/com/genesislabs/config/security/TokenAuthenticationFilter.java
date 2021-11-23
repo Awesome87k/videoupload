@@ -21,14 +21,22 @@ import java.io.IOException;
 @Log4j2
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
     private CustomUserDetailService userDetailsService;
-
-    @Autowired
     private JwtComponent jwtComponent;
+    private CookieComponent cookieComponent;
 
     @Autowired
-    private CookieComponent cookieComponent;
+    public void setCustomUserDetailService(CustomUserDetailService _userDetailsService) {
+        this.userDetailsService = _userDetailsService;
+    }
+    @Autowired
+    public void setJwtComponent(JwtComponent _jwtComponent) {
+        this.jwtComponent = _jwtComponent;
+    }
+    @Autowired
+    public void setCookieComponent(CookieComponent _cookieComponent) {
+        this.cookieComponent = _cookieComponent;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -39,7 +47,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String[] publicUri = SecurityConfiguration.PUBLIC_URI;
         boolean jwtCheckTf = true;
         for(String uri : publicUri) {
-            if(_req.getRequestURI().equals(uri))
+            uri = uri.replace("**","");
+            if(_req.getRequestURI().equals(uri) || _req.getRequestURI().contains(uri))
                 jwtCheckTf=false;
         }
 
@@ -53,7 +62,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
      * @param _req
      * @return boolean
      */
-    private void jwtAuthentication(HttpServletRequest _req, HttpServletResponse _res) {
+    private void jwtAuthentication(HttpServletRequest _req, HttpServletResponse _res) throws IOException {
         String email = null;
         String jwt = null;
         String refreshJwt = null;
@@ -98,14 +107,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     String newToken =jwtComponent.generateToken(refreshEmail);
                     Cookie newAccessToken  = cookieComponent.createCookie(JwtComponent.ACCESS_TOKEN_NAME,newToken);
                     _res.addCookie(newAccessToken);
-                    return;
                 }
             } else {
                 log.error("not found token info, retry login");
                 _res.sendRedirect("/page/login-view");
+                return;
             }
         } catch(ExpiredJwtException | IOException _e) {
             log.error(_e);
+            _res.sendRedirect("/page/login-view");
         }
     }
 }

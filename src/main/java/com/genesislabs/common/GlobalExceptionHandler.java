@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -94,6 +95,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity expiredJwtException(ExpiredJwtException _ex) {
         DataResponse dataRes = new DataResponse();
         dataRes.setMessage("access토큰이 만료되었습니다.");
+        dataRes.setResult(false);
+        return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400
+     * 요청 정보의 유효성 검증
+     * @param _ex
+     * @return DataResponse
+     */
+    @ExceptionHandler({ ConstraintViolationException.class })
+    public ResponseEntity constraintViolationException(ConstraintViolationException _ex) {
+        DataResponse dataRes = new DataResponse();
+        AtomicReference<String> errMsg = new AtomicReference<>("");
+        _ex.getConstraintViolations().forEach(msg ->{
+            errMsg.set(msg.getMessage());
+        });
+        dataRes.setMessage(errMsg.toString());
         dataRes.setResult(false);
         return new ResponseEntity(dataRes, HttpStatus.BAD_REQUEST);
     }

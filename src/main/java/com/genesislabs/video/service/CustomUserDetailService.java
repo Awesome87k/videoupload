@@ -1,12 +1,12 @@
 package com.genesislabs.video.service;
 
 import com.genesislabs.common.exception.*;
+import com.genesislabs.config.security.CookieComponent;
+import com.genesislabs.video.dto.req.EditUserInfoReqDTO;
 import com.genesislabs.video.dto.req.JoinUserInfoReqDTO;
-import com.genesislabs.video.dto.req.RemoveUserReqDTO;
 import com.genesislabs.video.entity.TokenEntity;
 import com.genesislabs.video.entity.UserEntity;
 import com.genesislabs.video.repository.UserInfoRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,21 +26,30 @@ import java.util.Set;
  * 회원정보를 조회하는 UserDetailsService를 재정의 합니다.
  */
 @Log4j2
-@RequiredArgsConstructor
 @Service
 public class CustomUserDetailService implements UserDetailsService {
-    private String ADMIN_USER_LEVEL = "A";
 
-    @Autowired
-    HttpServletRequest request;
-
-    @Autowired
+    private final String ADMIN_USER_LEVEL = "A";
     private UserInfoRepository userInfoRepository;
+    private CookieComponent cookieComponent;
+
+    @Autowired
+    public void setUserInfoRepository(UserInfoRepository _userInfoRepository) {
+        this.userInfoRepository = _userInfoRepository;
+    }
+
+    @Autowired
+    public void setCookieComponent(CookieComponent _cookieComponent) {
+        this.cookieComponent = _cookieComponent;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String _email) throws UsernameNotFoundException {
         UserEntity userInfo = userInfoRepository.findUserByUserInfo(_email);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        if(ObjectUtils.isEmpty(userInfo))
+            throw new UsernameNotFoundException("'" + _email + "' not found username");
+
         if(userInfo.getVu_level().equals(ADMIN_USER_LEVEL))
             grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
         else
@@ -50,16 +58,8 @@ public class CustomUserDetailService implements UserDetailsService {
         return new User(userInfo.getVu_email(), userInfo.getVu_pw(), userInfo.getVu_del_yn().equals("N"), true, true, true, grantedAuthorities);
     }
 
-    public UserEntity loadUserByUserInfo(String _email) {
+    public UserEntity loadUserInfoByEmail(String _email) {
         UserEntity userEntity = userInfoRepository.findUserByUserInfo(_email);
-        if(ObjectUtils.isEmpty(userEntity))
-            throw new UsernameNotFoundException("사용자 정보가 올바르지 않습니다.");
-
-        return userEntity;
-    }
-
-    public UserEntity loadUserByUserInfo(String _email, String _pw) {
-        UserEntity userEntity = userInfoRepository.findUserByUserInfo(_email, _pw);
         if(ObjectUtils.isEmpty(userEntity))
             throw new UsernameNotFoundException("사용자 정보가 올바르지 않습니다.");
 
@@ -113,21 +113,25 @@ public class CustomUserDetailService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean removeUserWithEmail(RemoveUserReqDTO _removeUserDTO) {
-        boolean resltTf = false;
+    public void editUserInfo(EditUserInfoReqDTO _joinUserDTO) {
+        UserEntity userEntity = cookieComponent.findUserInfoByCookie();
+        if (ObjectUtils.isEmpty(userEntity))
+            throw new UsernameNotFoundException("사용자 정보를 확인할 수 없습니다.");
 
-        if(!ObjectUtils.isEmpty(_removeUserDTO)) {
-            //email 중복확인
-            UserEntity userEntity = userInfoRepository.findDuplicateIdByEmail(_removeUserDTO.getEmail());
-            if (ObjectUtils.isEmpty(userEntity))
-                throw new BadRequestException("탈퇴요청한 사용자가 존재하지 않습니다.");
-            else {
-                userEntity.setVu_del_yn("Y");
-                resltTf = true;
-            }
-        } else
-            throw new BadRequestException("탈퇴요청 정보가 존재하지 않습니다.");
+        userEntity.setVu_name(_joinUserDTO.getName());
+        userEntity.setVu_phonenum(_joinUserDTO.getPhonenum());
+        userEntity.setVu_level(_joinUserDTO.getLevel());
+    }
 
-        return resltTf;
+    @Transactional
+    public boolean removeUserWithEmail() {
+        UserEntity userEntity = cookieComponent.findUserInfoByCookie();
+        if (ObjectUtils.isEmpty(userEntity))
+            throw new BadRequestException("탈퇴요청한 사용자가 존재하지 않습니다.");
+        else {
+            userEntity.setVu_email(userEntity.getVu_email()+"#DEL");
+            userEntity.setVu_del_yn("Y");
+            return true;
+        }
     }
 }

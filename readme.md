@@ -1,10 +1,6 @@
 # 비디오 파일관리 기능
 
 ## 머릿말
- 안녕하세요 금번 입사 지원한 채승주 입니다.
- 현재직중인 회사의 프로젝트이 딜레이됨에 따라 야근 및 주말 출근으로 테스트 프로젝트 구현 일정이 겹치게되어
- 회원수정기능 미개발, 각 화면UI 미구현, 테스트코드 미구현 등 급박하게 구현되어 과제의 전체적인 완성도가 떨어지는점 양해부탁드립니다. 
- 감사합니다.
 
 ## 1.프로젝트 구성
  - Spring Boot 
@@ -28,11 +24,11 @@
 > ERD
  - src/main/resources/erd/video_uploaDB.mwb
 ### 3.2.application-local.yml
-> application-local.yml 
- - servlet.multipart.location : ${projectPath}/**static**/${uploadPath}/
+> application-local.yml
  - spring.datasource.jdbcUrl 설정필요
  - spring.datasource.username 설정필요
  - spring.datasource.password 설정필요
+ - servlet.multipart.location: 설정필요 (현재설정 - D:\test\video\)
 
 ## 4. 접근페이지
  - 로그인 : /page/login-view
@@ -40,3 +36,7 @@
  - 업로드 : /page/video-upload-view
  - 파일조회 : /page/video-search-view
  - 플레이어 : /page/video-player-view
+
+## 5. 사용자 권한
+ - admin(A) : !@#!@@!#메뉴나열
+ - member(M) : !@#!@#!@#메뉴나열

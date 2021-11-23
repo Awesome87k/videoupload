@@ -17,19 +17,29 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AuthorizationChecker {
     private static final String[] ADMIN_MAIN_URL_REDIRECT = {
-        "/page/video-search-view"
-        , "/page/video-player-view"
-        , "/data/video/search-file"
-        , "/data/video/play-video"
+            "/page/edit-user-view"
+            , "/page/video-search-view"
+            , "/page/video-player-view"
+            , "/data/video/file-list"
+            , "/data/video/play-video"
     };
 
     private static final String[] MEMBER_MAIN_URL_REDIRECT = {
-        "/page/video-upload-view"
-        , "/data/video/upload-file"
+            "/page/edit-user-view"
+            , "/page/video-upload-view"
+            , "/page/video-search-view"
+            , "/page/video-player-view"
+            , "/data/video/upload-file"
+            , "/data/video/file-list"
+            , "/data/video/play-video"
     };
 
+    private CustomUserDetailService userDetailService;
+
     @Autowired
-    CustomUserDetailService userDetailService;
+    public void setCustomUserDetailService(CustomUserDetailService _userDetailService) {
+        this.userDetailService = _userDetailService;
+    }
 
     /**
      * 사용자의 접근권한을 확인한다.( 실운영 서비스에서는 DB를 활용하여 사용자 접근권한을 관리한다 )
@@ -37,29 +47,29 @@ public class AuthorizationChecker {
      * @return boolean
      */
     public boolean check(HttpServletRequest _req, Authentication _authentication) {
-        if(ObjectUtils.isEmpty(_authentication))
-            throw new UsernameNotFoundException("사용자 정보가 존재하지 않습니다.");
 
         Object pricipalObj = _authentication.getPrincipal();
+        if(ObjectUtils.isEmpty(pricipalObj) || pricipalObj.equals("anonymousUser"))
+            return false;
+
         String userEmail = ((User) pricipalObj).getUsername();
-        UserEntity userEntity = userDetailService.loadUserByUserInfo(userEmail);
+        UserEntity userEntity = userDetailService.loadUserInfoByEmail(userEmail);
         String level = userEntity.getVu_level();
 
         //실 서비스에서는 DB로 uri를 관리한다.
         if(level.equals("A")) {
-            for(String url : MEMBER_MAIN_URL_REDIRECT) {
-                if(_req.getRequestURI().equals(url))
-                    return false;
-            }
-            return true;
-        } else if(level.equals("M")) {
             for(String url : ADMIN_MAIN_URL_REDIRECT) {
-                if(_req.getRequestURI().equals(url))
-                    return false;
+                if(_req.getRequestURI().contains(url))
+                    return true;
             }
-            return true;
+        } else if(level.equals("M")) {
+            for(String url : MEMBER_MAIN_URL_REDIRECT) {
+                if(_req.getRequestURI().contains(url))
+                    return true;
+            }
         } else
             throw new BusinessException("지정된 user레벨이 아닙니다. 'v_user.vu_level'정보를 확인해주세요");
 
+        return false;
     }
 }

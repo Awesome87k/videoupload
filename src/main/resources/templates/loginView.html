@@ -3,29 +3,37 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link href="/vendors/bootstrap/bootstrap.css" rel="stylesheet">
+		<link href="/vendors/font-awesome/font-awesome.min.css" rel="stylesheet">
+		<link href="/css/view.css" rel="stylesheet">
 	</head>
 	<body>
-	<form method="post" name="form" action="/data/user/login">
 		<section class="view_wrap clearfix">
 			<div class="view_contents">
-				<h1>로그인</h1>
-				<div>
-					<span>아이디</span>
-					<input type="text" id="access_id" name="access_id" placeholder="아이디">
-				</div>
-				<div>
-					<span>패스워드</span>
-					<input type="text" id="access_pw" name="access_pw" placeholder="패스워드">
-				</div>
-				<div id="login-btn">
-					<button type="button" class="submit">로그인</button>
-				</div>
-				<div id="join-btn">
-					<button type="button" class="submit">회원가입으로 이동</button>
-				</div>
+				<form method="post" name="form" action="/data/user/login">
+					<h1>로그인</h1>
+					<div class="mark_area">
+						<span>아이디</span>
+						<input type="text" id="access_id" name="access_id" placeholder="아이디">
+					</div>
+					<div class="mark_area">
+						<span>패스워드</span>
+						<input type="text" id="access_pw" name="access_pw" placeholder="패스워드">
+					</div>
+					<div id="login-btn" class="mark_area">
+						<button type="button" class="submit view_btn">로그인</button>
+					</div>
+					<div id="join-btn" class="mark_area">
+						<button type="button" class="view_btn">회원가입으로 이동</button>
+					</div>
+					<div class="alert_area">
+						<div th:if="${loginFailMsg}!=null">
+							<p class="info_wrong" th:text="${loginFailMsg}"></p>
+						</div>
+					</div>
+				</form>
 			</div>
 		</section>
-	</form>
 	</body>
 	<script>
 		document.querySelector('#join-btn button').addEventListener('click', () => {

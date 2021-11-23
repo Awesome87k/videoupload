@@ -18,25 +18,37 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     protected static final String[] PUBLIC_URI = {
-            "/", "/css/**" , "/js/**", "/favicon.ico", "/error"
+            "/js/**","/vendors/**","/css/**"
+            , "/favicon.ico", "/error"
             , "/page/login-view"
             , "/page/join-view"
             , "/data/user/login"
             , "/data/user/logout"
-            , "/data/user/join"
+            , "/data/user/**"
+            , "/data/user"
     };
 
-    @Autowired
     private LoginSuccessHandler successHandler;
-
-    @Autowired
     private LoginFailHandler failHandler;
-
-    @Autowired
     private CustomAuthenticationManager authenticationProvider;
+    private CustomUserDetailService userDetailService;
 
     @Autowired
-    private CustomUserDetailService userDetailService;
+    public void setLoginSuccessHandler(LoginSuccessHandler _loginSuccessHandler) {
+        this.successHandler = _loginSuccessHandler;
+    }
+    @Autowired
+    public void setLoginFailHandler(LoginFailHandler _loginFailHandler) {
+        this.failHandler = _loginFailHandler;
+    }
+    @Autowired
+    public void setCustomAuthenticationManager(CustomAuthenticationManager _customAuthenticationManager) {
+        this.authenticationProvider = _customAuthenticationManager;
+    }
+    @Autowired
+    public void setCustomUserDetailService(CustomUserDetailService _customUserDetailService) {
+        this.userDetailService = _customUserDetailService;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

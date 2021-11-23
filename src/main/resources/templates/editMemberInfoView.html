@@ -3,31 +3,36 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<link href="/vendors/bootstrap/bootstrap.css" rel="stylesheet">
+		<link href="/vendors/font-awesome/font-awesome.min.css" rel="stylesheet">
+		<link href="/css/view.css" rel="stylesheet">
+		<script  src="/vendors/jquery/3.6.0/jquery.js"></script>
 	</head>
 	<body>
-		<div class="view_contents">
-			<h1>회원가입</h1>
-			<div>
-				<span>패스워드</span>
-				<input type="text" id="pw" placeholder="패스워드">
+		<section class="view_wrap">
+			<div class="view_contents">
+				<h1>회원정보수정</h1>
+				<div class="mark_area">
+					<span>이름</span>
+					<input type="text" id="name" placeholder="이름" th:value="${user.vu_name}">
+				</div>
+				<div class="mark_area">
+					<span>전화번호</span>
+					<input type="text" id="phonenum" placeholder="전화번호" th:value="${user.vu_phonenum}">
+				</div>
+				<div class="mark_area">
+					<span>권한</span>
+					<select id="level" >
+						<option value="M" th:selected="${user.vu_level}=='M'">일반사용자</option>
+						<option value="A" th:selected="${user.vu_level}=='A'">관리자</option>
+					</select>
+				</div>
+				<div class="mark_area">
+					<button id="edit-btn" type="button">정보변경</button>
+				</div>
 			</div>
-			<div>
-				<span>전화번호</span>
-				<input type="text" id="phonenum" placeholder="전화번호">
-			</div>
-			<div>
-				<span>권한</span>
-				<select id="level">
-					<option value="M">일반사용자</option>
-					<option value="A">관리자</option>
-				</select>
-			</div>
-			<div id="view_btn">
-				<button id="join-btn" type="button">회원가입</button>
-			</div>
-			</div>
+		</section>
 	</body>
 	<script src="/js/util.js"></script>
-	<script src="/js/join.js"></script>
+	<script src="/js/editView.js"></script>
 </html>

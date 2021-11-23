@@ -2,8 +2,9 @@ package com.genesislabs.video.controller;
 
 import com.genesislabs.common.DataResponse;
 import com.genesislabs.common.DataResponsePattern;
+import com.genesislabs.common.enums.FailMessage;
+import com.genesislabs.video.dto.req.EditUserInfoReqDTO;
 import com.genesislabs.video.dto.req.JoinUserInfoReqDTO;
-import com.genesislabs.video.dto.req.RemoveUserReqDTO;
 import com.genesislabs.video.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,33 +14,44 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Slf4j
-@RequestMapping(value = "/data/user/")
-@RestController
 @RequiredArgsConstructor
+@RequestMapping(value = "/data/user")
+@RestController
 public class LoginDataController extends DataResponsePattern {
 
-    @Autowired
     private CustomUserDetailService userDetailsService;
 
-    @PostMapping("join")
-    public DataResponse joinMember(
+    @Autowired
+    public void setCustomUserDetailService(CustomUserDetailService _userDetailsService) {
+        this.userDetailsService = _userDetailsService;
+    }
+
+    @PostMapping
+    public DataResponse joinUser(
             @RequestBody @Valid JoinUserInfoReqDTO _joinUserDTO
     ) {
         boolean reusltTf = userDetailsService.addJoinUser(_joinUserDTO);
         if(reusltTf)
             return super.mvcReponseSuccess("회원 가입에 성공했습니다");
         else
-            return super.mvcReponseFail("회원 가입에 실패했습니다.\n관리자에게 문의해주세요");
+            return super.mvcReponseFail(FailMessage.ADD_ACCOUNT_FAIL.getMessage());
     }
 
-    @DeleteMapping("del-account")
-    public DataResponse deleteAccount(
-            @Valid RemoveUserReqDTO _removeUserDTO
+    @PutMapping
+    public DataResponse editUser(
+            @RequestBody @Valid EditUserInfoReqDTO _editUserDTO
     ) {
-        boolean reusltTf = userDetailsService.removeUserWithEmail(_removeUserDTO);
+        userDetailsService.editUserInfo(_editUserDTO);
+        return super.mvcReponseSuccess("회원 정보수정에 성공했습니다");
+    }
+
+    @DeleteMapping
+    public DataResponse deleteAccount() {
+        boolean reusltTf = userDetailsService.removeUserWithEmail();
         if(reusltTf)
             return super.mvcReponseSuccess("회원 탈퇴에 성공했습니다");
         else
-            return super.mvcReponseFail("회원 탈퇴에 실패했습니다.\n관리자에게 문의해주세요");
+            return super.mvcReponseFail(FailMessage.DEL_ACCOUNT_FAIL.getMessage());
     }
+
 }

@@ -7,9 +7,6 @@ const view = {
         $(document).on("click", "#upload-btn", function(){
             view.upload();
         });
-        $(document).on("click", "#logout-btn button", function(){
-            location.href="/data/logout";
-        });
     }
     , upload: function() {
         const form = $("#form")[0];

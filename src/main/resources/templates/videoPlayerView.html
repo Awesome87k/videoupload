@@ -3,19 +3,16 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script  src="/vendors/jquery/3.6.0/jquery.js"></script>
 	</head>
 	<body>
 		<section class="view_wrap">
 			<div class="view_contents">
 				<h1>비디오 재생페이지.</h1>
 				<video controls id="videoView">
-					<source th:src="${reqUri}" type="video/mp4">
+					<source th:src="${'/data/video/play-video/'+vf_idx}" type="video/mp4">
 				</video>
 			</div>
 		</section>
 	</body>
-	<script>
-		let videoUrl = "[[${url}]]";
-	</script>
 </html>

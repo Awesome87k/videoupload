@@ -3,17 +3,34 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<link href="/vendors/bootstrap/bootstrap.css" rel="stylesheet">
+		<link href="/vendors/font-awesome/font-awesome.min.css" rel="stylesheet">
+		<link href="/css/view.css" rel="stylesheet">
+		<script  src="/vendors/jquery/3.6.0/jquery.js"></script>
 	</head>
 	<body>
 		<section class="view_wrap">
 			<div class="view_contents">
-				<h1>비디오 조회페이지.</h1>
-				<div id="dataDiv">
-					<table id="dataTable"></table>
+				<div class="mark_area">
+					<button type="button" id="edit-user-btn" class="view_option_btn">회원정보변경</button>
+					<button type="button" id="del-user-btn" class="view_option_btn">회원탈퇴</button>
+					<button type="button" id="logout-btn" class="view_option_btn">로그아웃</button>
 				</div>
-				<div id="logout-btn">
-					<button type="button">로그아웃</button>
+
+				<h1>비디오 조회페이지.</h1>
+				<div class="list_wrap">
+					<table id="dataTable" class="common_table">
+						<thead>
+							<tr class="table_tit">
+								<th>파일명</th>
+								<th>영상확인</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+				<div th:style="${level.equals('M') ? 'display:block' : 'display:none'}">
+					<button type="button" id="upload-btn">업로드</button>
 				</div>
 			</div>
 		</section>

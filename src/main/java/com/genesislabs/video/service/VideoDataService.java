@@ -8,7 +8,9 @@ import com.genesislabs.video.repository.VideoInfoRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -26,25 +28,24 @@ public class VideoDataService {
 
     @Value("${spring.servlet.multipart.location}")
     private String filePath;
-
-    @Autowired
-    private HttpServletRequest reqeuest;
-
-    @Autowired
-    private CustomUserDetailService userDetailsService;
-
-    @Autowired
     private VideoInfoRepository videoInfoRepository;
-
-    @Autowired
     private CookieComponent cookieComponent;
 
+    @Autowired
+    public void setCookieComponent(CookieComponent _cookieComponent) {
+        this.cookieComponent = _cookieComponent;
+    }
+
+    @Autowired
+    public void setVideoInfoRepository(VideoInfoRepository _videoInfoRepository) {
+        this.videoInfoRepository = _videoInfoRepository;
+    }
 
     public boolean fileUplad(MultipartFile _videoFile) throws IOException {
         String fileName = _videoFile.getOriginalFilename();
         String uploadPath = filePath + fileName;
         File uploadFile = new File(uploadPath);
-        UserEntity userEntity = findUserInfoByCookie();
+        UserEntity userEntity = cookieComponent.findUserInfoByCookie();
 
         if(uploadFile.exists()) {
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -65,7 +66,7 @@ public class VideoDataService {
     }
 
     public List<FileUploadEntity> findFileList() {
-        UserEntity userEntity = findUserInfoByCookie();
+        UserEntity userEntity = cookieComponent.findUserInfoByCookie();
         return videoInfoRepository.findUploadVideoDataByEmail(userEntity.getVu_email());
     }
 
@@ -91,10 +92,4 @@ public class VideoDataService {
         os.flush();
     }
 
-    private UserEntity findUserInfoByCookie() {
-        Cookie refreshCookie = cookieComponent.getCookie(reqeuest, JwtComponent.REFRESH_TOKEN_NAME);
-        String refeshToken = refreshCookie.getValue();
-        UserEntity userEntity = userDetailsService.loadUserinfoInfoByToken(refeshToken);
-        return userEntity;
-    }
 }

@@ -3,23 +3,23 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<link href="/vendors/bootstrap/bootstrap.css" rel="stylesheet">
+		<link href="/vendors/font-awesome/font-awesome.min.css" rel="stylesheet">
+		<link href="/css/view.css" rel="stylesheet">
+		<script  src="/vendors/jquery/3.6.0/jquery.js"></script>
 	</head>
 	<body>
 		<section class="view_wrap">
 			<div class="view_contents">
 				<h1>비디오 업로드페이지</h1>
 				<form method="post" id="form" enctype="multipart/form-data">
-					<div>
+					<div class="mark_area">
 						<input name="videoFile" id="videoFile" type="file">
 					</div>
-					<div id="upload-btn">
+					<div id="upload-btn" class="mark_area">
 						<button type="button">업로드</button>
 					</div>
 				</form>
-				<div id="logout-btn">
-					<button type="button">로그아웃</button>
-				</div>
 			</div>
 		</section>
 	</body>

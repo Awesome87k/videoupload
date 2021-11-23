@@ -1,6 +1,6 @@
 package com.genesislabs.config.security;
 
-import com.genesislabs.common.enums.LoginFail;
+import com.genesislabs.common.enums.FailMessage;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,11 +27,11 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
     ) throws IOException {
         String message = null;
         if ( exception instanceof AuthenticationServiceException )
-            message = LoginFail.NOT_FOUND_USER.getMessage();
+            message = FailMessage.NOT_FOUND_USER.getMessage();
         else if( exception instanceof BadCredentialsException )
-            message = LoginFail.INVALUD_LOGIN_INFO.getMessage();
+            message = FailMessage.INVALUD_LOGIN_FAIL.getMessage();
         else if( exception instanceof UsernameNotFoundException)
-            message = LoginFail.INVALUD_LOGIN_INFO.getMessage();
+            message = FailMessage.INVALUD_LOGIN_FAIL.getMessage();
 
         if (message != null) {
             final FlashMap flashMap = new FlashMap();

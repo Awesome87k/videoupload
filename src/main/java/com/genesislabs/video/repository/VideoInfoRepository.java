@@ -36,14 +36,16 @@ public class VideoInfoRepository extends QuerydslRepositorySupport {
 
     public List<FileUploadEntity> findUploadVideoDataByEmail(String _Email) {
         return queryFactory
-                .selectFrom(fileEntity)
-                .fetch();
+            .selectFrom(fileEntity)
+            .join(userEntity).on((fileEntity.vu_idx.eq(userEntity.vu_idx).and(userEntity.vu_email.eq(_Email)))
+                        .or(userEntity.vu_level.eq("A").and(userEntity.vu_email.eq(_Email))))
+            .fetch();
     }
 
     public FileUploadEntity findVideoDataByVfidx(int _vf_idx) {
         return queryFactory
-                .selectFrom(fileEntity)
-                .where(fileEntity.vf_idx.eq(_vf_idx))
-                .fetchOne();
+            .selectFrom(fileEntity)
+            .where(fileEntity.vf_idx.eq(_vf_idx))
+            .fetchOne();
     }
 }
