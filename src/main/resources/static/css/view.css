@@ -1,0 +1,164 @@
+@charset "UTF-8";
+
+html {
+  height: 100%;
+  background: #20283f;
+  background: linear-gradient( to bottom, #203169, #202944, #222222);
+  font-family: 'Nanum Gothic', sans-serif;
+}
+body {
+  background: linear-gradient( to bottom, #203169, #202944, #222222);
+}
+.view_wrap {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  width: 350px;
+  height: 420px;
+  margin-left: -175px;
+  margin-top: -80px;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+}
+.view_wrap > div {
+  float: left;
+  width: 350px;
+  height: 435px;
+  text-align: center;
+}
+.view_wrap .view_logo_wrap {
+  width: 500px;
+  line-height: 400px;
+  border-right: 1px solid rgba(235,235,235,0.2);
+}
+.view_wrap .view_logo_wrap .view_logo img.logo_img {
+  margin-top: -20px;
+  margin-right: 10px;
+}
+.view_wrap .view_logo_wrap .view_logo span.logo_name {
+  font-size: 40px;
+  font-weight: 500;
+}
+.view_wrap form {
+  width: 350px;
+  margin: 0 auto;
+}
+.view_wrap .view_contents h1 {
+  margin: 20px 0;
+  font-weight: 600;
+  font-size: 28px;
+}
+.view_wrap .view_contents .explain {
+  margin-top: 0;
+  margin-bottom: 27px;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+}
+.view_wrap .view_contents input, select, option {
+  float: right;
+  width: 255px;
+  height: 30px;
+  border-radius: 7px;
+  box-shadow: none;
+  border: none;
+  text-indent: 10px;
+  background: rgba(255,255,255,0.2);
+  /*color: #fff;*/
+}
+.view_wrap .view_contents input::placeholder {
+  color: #fff;
+}
+.view_wrap .view_contents p {
+  margin-top: 25px;
+  margin-bottom: 7px;
+  font-weight: 500;
+  font-size: 14px;
+}
+.view_wrap .view_contents .view_btn {
+  width: 350px;
+  background-color: #1abc9c;
+  border-radius: 7px;
+}
+
+.view_option_btn {
+  width: 112px;
+  background-color: #1abc9c;
+  border-radius: 7px;
+}
+
+.view_wrap .view_contents .view_btn button {
+  display: block;
+  width: 100%;
+  height: 45px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  border:none;
+  background: none;
+}
+.view_wrap .view_contents .view_btn button:focus {
+  outline: 0;
+
+}
+.view_wrap .view_contents .view_btn button:focus {
+  outline: 0;
+}
+.mark_name {
+  float: left;
+  font-size: 18px;
+}
+.mark_area {
+  height: 35px;
+  margin-bottom: 25px;
+}
+.mark_right {
+  float: right;
+  margin-left: 10px;
+}
+
+.list_wrap ul li {
+  float: left;
+  width: 23%;
+  height: 45px;
+  line-height: 45px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  color: #222;
+  background-color: #f7f7f7;
+  transform: skew(-0.028deg);
+}
+
+.list_wrap tr {
+  border-bottom: 1px solid #ebebeb;
+}
+.list_wrap ul li:nth-child(1) {
+  width: 5%;
+}
+.list_wrap ul li:nth-child(2) {
+  width: 39%;
+}
+.list_wrap ul li:nth-child(4) {
+  width: 8%;
+}
+.list_wrap ul li:nth-child(5) {
+  width: 25%;
+}
+.list_wrap table {
+  width: 99%;
+}
+.list_wrap .scrollbar {
+  height: 665px;
+  margin-top: 5px;
+}
+.list_wrap .common_table tr {
+  height: 42px;
+}
+.list_wrap .common_table thead tr {
+  height: 0px;
+}
+.list_wrap .common_table .name {
+  font-size: 14px;
+}
