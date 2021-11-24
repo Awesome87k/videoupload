@@ -49,7 +49,7 @@ public class VideoDataController extends DataResponsePattern {
         return super.mvcReponseSuccess(videoListData);
     }
 
-    @GetMapping("play-video/{vf_idx}")
+    @GetMapping("/play-video/{vf_idx}")
     public StreamingResponseBody playVideo(
         @PathVariable int vf_idx
     ) throws FileNotFoundException {
