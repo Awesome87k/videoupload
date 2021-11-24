@@ -58,7 +58,7 @@ const view = {
                 alert(errorThrown);
         };
 
-        util.getajax("/data/video/file-list", params, fns, fne);
+        util.getajax("/data/video", params, fns, fne);
     }
 
     , doDelUser: function() {

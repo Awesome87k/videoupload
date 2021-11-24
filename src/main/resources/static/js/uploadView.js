@@ -28,6 +28,6 @@ const view = {
                 alert(errorThrown);
         };
 
-        util.uploadajax("/data/video/upload-file", formData, fns, fne);
+        util.uploadajax("/data/video", formData, fns, fne);
     }
 }

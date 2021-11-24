@@ -20,7 +20,7 @@ public class AuthorizationChecker {
             "/page/edit-user-view"
             , "/page/video-search-view"
             , "/page/video-player-view"
-            , "/data/video/file-list"
+            , "/data/video"
             , "/data/video/play-video"
     };
 
@@ -29,8 +29,7 @@ public class AuthorizationChecker {
             , "/page/video-upload-view"
             , "/page/video-search-view"
             , "/page/video-player-view"
-            , "/data/video/upload-file"
-            , "/data/video/file-list"
+            , "/data/video"
             , "/data/video/play-video"
     };
 

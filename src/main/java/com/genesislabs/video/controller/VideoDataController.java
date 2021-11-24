@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Slf4j
-@RequestMapping(value = "/data/video/")
+@RequestMapping(value = "/data/video")
 @RestController
 @RequiredArgsConstructor
 public class VideoDataController extends DataResponsePattern {
@@ -29,8 +29,8 @@ public class VideoDataController extends DataResponsePattern {
         this.videoDataService = _videoDataService;
     }
 
-    @PostMapping(value="upload-file")
-        public DataResponse uploadFile(
+    @PostMapping
+    public DataResponse uploadFile(
             MultipartFile videoFile
     ) throws IOException {
         if(!videoFile.isEmpty()) {
@@ -43,7 +43,7 @@ public class VideoDataController extends DataResponsePattern {
             return super.mvcReponseFail(FailMessage.FILE_UPLOAD_EMPTY_FAIL.getMessage());
     }
 
-    @GetMapping("file-list")
+    @GetMapping
     public DataResponse fileList() {
         List<FileUploadEntity> videoListData =  videoDataService.findFileList();
         return super.mvcReponseSuccess(videoListData);
