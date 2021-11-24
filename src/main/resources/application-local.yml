@@ -26,11 +26,11 @@ spring:
     videoupload:
       type: com.zaxxer.hikari.HikariDataSource
       driverClassName: com.mysql.cj.jdbc.Driver
-      jdbcUrl: jdbc:mysql://101.79.240.23:3306/video_upload?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
-      username: service
-      password: qnfRhcl!)!50
+      jdbcUrl: jdbc:mysql://localhost:3306/video_upload?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
+      username: id
+      password: pw
       hikari:
-        poolName: ostreamCP
+        poolName: videoCP
         connectionTimeout: 10000
         maximumPoolSize: 10
         minimumIdle: 5

@@ -1,7 +1,5 @@
 # 비디오 파일관리 기능
 
-## 머릿말
-
 ## 1.프로젝트 구성
  - Spring Boot 
  - Spring Security
@@ -30,13 +28,22 @@
  - spring.datasource.password 설정필요
  - servlet.multipart.location: 설정필요 (현재설정 - D:\test\video\)
 
-## 4. 접근페이지
+## 4. 기능
  - 로그인 : /page/login-view
+ - 로그아웃 : /data/logout
  - 회원가입 : /page/join-view
- - 업로드 : /page/video-upload-view
- - 파일조회 : /page/video-search-view
+ - 회원정보변경 : /page/edit-user-view
+ - 비디오업로드 : /page/video-upload-view
+ - 비디오조회 : /page/video-search-view
  - 플레이어 : /page/video-player-view
 
-## 5. 사용자 권한
- - admin(A) : !@#!@@!#메뉴나열
- - member(M) : !@#!@#!@#메뉴나열
+
+
+## 5. 페이지접근 권한
+### 5.1. admin
+ - 비디오조회 : /page/video-search-view
+ - 회원정보변경 : /page/edit-user-view
+### 5.2. member
+ - 비디오조회 : /page/video-search-view
+ - 비디오업로드 : /page/video-upload-view
+ - 회원정보변경 : /page/edit-user-view
