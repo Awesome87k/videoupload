@@ -29,7 +29,7 @@ public class MainDBConfig {
     public LocalContainerEntityManagerFactoryBean jpaEntityManagerFactory(
             EntityManagerFactoryBuilder _builder,
             @Qualifier("videouploadDataSource") DataSource _dataSource ) {
-        return _builder.dataSource(_dataSource).packages("com.genesislabs.video.entity").build();
+        return _builder.dataSource(_dataSource).packages("com.uploadservice.video.entity").build();
     }
 
     @Primary
